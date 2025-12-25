@@ -129,3 +129,38 @@ body {
   text-decoration: none;
   border-bottom: 1px solid #a020f0;
 }
+/* HISTORY LOG STYLES */
+.history-container {
+  margin-top: 4rem;
+  width: 100%;
+  text-align: left;
+  border-top: 1px solid #333;
+  padding-top: 1rem;
+}
+
+.history-log {
+  font-size: 0.7rem;
+  color: #555;
+  font-family: "Courier New", Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.log-entry {
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+  border-bottom: 1px solid #111;
+  padding-bottom: 2px;
+}
+
+/* Newest entry is brighter */
+.log-entry:first-child {
+  color: #888;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

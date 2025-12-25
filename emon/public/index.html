@@ -1,101 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AInwonderland</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header class="glitch-wrapper">
-        <h1 class="brand" data-text="AInwonderland">AInwonderland_</h1>
-      </header>
+<body>
+  <div class="container">
+    <header class="glitch-wrapper">
+      <h1 class="brand" data-text="AInwonderland">AInwonderland_</h1>
+    </header>
 
-      <main>
-        <div class="manifesto-mini">
-          <p>WE REJECT THE GRAY.</p>
-          <p>BECOME A <span class="highlight">WUNDRIAN</span>.</p>
+    <main>
+      <div class="manifesto-mini">
+        <p>WE REJECT THE GRAY.</p>
+        <p>BECOME A <span class="highlight">WUNDRIAN</span>.</p>
+      </div>
+
+      <div class="ticker-box">
+        <div class="label">CURRENT E-MON VALUE</div>
+        <div class="price" id="price-display">$...</div>
+        <div class="sub-label">
+          LAST MINT: <span id="last-mint-time" class="blink">JUST NOW</span>
         </div>
+      </div>
 
-        <div class="ticker-box">
-          <div class="label">CURRENT E-MON VALUE</div>
-          <div class="price" id="price-display">$...</div>
-          <div class="sub-label">
-            LAST MINT: <span class="blink">JUST NOW</span>
-          </div>
-        </div>
+      <button id="buy-btn" class="ghost-btn">[ SECURE TOKEN ]</button>
 
-        <button id="buy-btn" class="ghost-btn">[ SECURE TOKEN ]</button>
+      <div id="terminal-output" class="hidden">
+        <p>> ACCESS GRANTED.</p>
+        <p>> E-MON: <span class="token" id="token-slot"></span></p>
+        <p>> <a href="#" class="discord-link">ENTER THE VOID (DISCORD)</a></p>
+      </div>
 
-        <div id="terminal-output" class="hidden">
-          <p>> ACCESS GRANTED.</p>
-          <p>> E-MON: <span class="token" id="token-slot"></span></p>
-          <p>> <a href="#" class="discord-link">ENTER THE VOID (DISCORD)</a></p>
-        </div>
-      </main>
-    </div>
+      <div class="history-container">
+        <div class="label">LIVE CHAIN ACTIVITY</div>
+        <div id="history-log" class="history-log"></div>
+      </div>
+    </main>
+  </div>
 
-    <script>
-      const priceDisplay = document.getElementById("price-display");
-      const buyBtn = document.getElementById("buy-btn");
-      const output = document.getElementById("terminal-output");
-      const tokenSlot = document.getElementById("token-slot");
+  <script>
+    const priceDisplay = document.getElementById("price-display");
+    const buyBtn = document.getElementById("buy-btn");
+    const output = document.getElementById("terminal-output");
+    const tokenSlot = document.getElementById("token-slot");
+    const historyLog = document.getElementById("history-log");
+    const lastMintLabel = document.getElementById("last-mint-time");
 
-      // SIMULATION MODE: Use LocalStorage instead of Server
-      // This allows it to work on GitHub Pages without a backend
+    // --- SIMULATION ENGINE ---
 
-      function getSimulatedPrice() {
-        let current = localStorage.getItem("wundrian_price");
-        if (!current) {
-          current = 1; // Start at $42
-          localStorage.setItem("wundrian_price", current);
-        }
-        return parseInt(current);
-      }
-
-      function incrementSimulatedPrice() {
-        let current = getSimulatedPrice();
-        current++;
+    function getSimulatedPrice() {
+      let current = localStorage.getItem("wundrian_price");
+      if (!current) {
+        current = 42;
         localStorage.setItem("wundrian_price", current);
-        return current;
       }
+      return parseInt(current);
+    }
 
-      // 1. Load Price
-      async function updatePrice() {
-        // Simulate API delay
-        const price = getSimulatedPrice();
-        priceDisplay.innerText = `$${price}.00`;
+    function incrementSimulatedPrice() {
+      let current = getSimulatedPrice();
+      current++;
+      localStorage.setItem("wundrian_price", current);
+      return current;
+    }
+
+    // 1. Render Price
+    function updateDisplay(price) {
+      priceDisplay.innerText = `$${price}.00`;
+      // Reset the "Blink" animation on the label
+      lastMintLabel.classList.remove("blink");
+      void lastMintLabel.offsetWidth; // Trigger reflow
+      lastMintLabel.classList.add("blink");
+    }
+
+    // 2. Add History Entry
+    function addHistoryLog(isUser = false) {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString("en-US", { hour12: false }); // 14:30:45
+      const unixID = Date.now(); // 1703512345678
+      const currentPrice = getSimulatedPrice();
+
+      const div = document.createElement("div");
+      div.className = "log-entry";
+
+      // If it's the USER, highlight it purple. If it's a BOT, keep it dim.
+      const userTag = isUser ? '<span class="highlight"> [YOU]</span>' : "";
+
+      div.innerHTML = `> ${timeString} :: ID_${unixID} :: VAL $${currentPrice}${userTag}`;
+
+      // Prepend (Newest on top)
+      historyLog.insertBefore(div, historyLog.firstChild);
+
+      // Keep only last 5 entries to save space
+      if (historyLog.children.length > 5) {
+        historyLog.removeChild(historyLog.lastChild);
       }
+    }
 
-      updatePrice();
+    // 3. Auto-Mint Loop (The Ghost)
+    function scheduleNextMint() {
+      // Random time between 3 and 99 seconds
+      // Math.random() * (max - min) + min
+      const delay = Math.floor(Math.random() * (99000 - 3000) + 3000);
 
-      // 2. Buy Logic
-      buyBtn.addEventListener("click", async () => {
-        buyBtn.innerText = "PROCESSING...";
-        buyBtn.disabled = true;
+      setTimeout(() => {
+        // Ghost buys a token
+        const newPrice = incrementSimulatedPrice();
+        updateDisplay(newPrice);
+        addHistoryLog(false); // false = bot
 
-        // Simulate Network Delay (The "Hacking" feel)
-        setTimeout(() => {
-          const nextPrice = incrementSimulatedPrice();
+        // Recursion: Schedule the next one
+        scheduleNextMint();
+      }, delay);
+    }
 
-          // Show the "E-mon"
-          output.classList.remove("hidden");
-          // Generate a random "glitch" string for the token
-          const randomId = Math.random()
-            .toString(36)
-            .substr(2, 9)
-            .toUpperCase();
-          tokenSlot.innerText = `TOKEN_#${randomId}_GLITCH`;
+    // --- INIT ---
+    const startPrice = getSimulatedPrice();
+    updateDisplay(startPrice);
+    scheduleNextMint(); // Start the ghosts
 
-          // Update price for the next "visit"
-          priceDisplay.innerText = `$${nextPrice}.00`;
+    // Populate a fake history entry on load so it's not empty
+    addHistoryLog(false);
 
-          buyBtn.innerText = "TOKEN SECURED";
-          buyBtn.style.borderColor = "#00FF41"; // Green
-          buyBtn.style.color = "#00FF41";
-        }, 1500);
-      });
-    </script>
-  </body>
-</html>
+    // --- USER INTERACTION ---
+    buyBtn.addEventListener("click", () => {
+      buyBtn.innerText = "PROCESSING...";
+      buyBtn.disabled = true;
+
+      setTimeout(() => {
+        const nextPrice = incrementSimulatedPrice();
+        updateDisplay(nextPrice);
+        addHistoryLog(true); // true = User bought it
+
+        output.classList.remove("hidden");
+        const randomId = Math.random().toString(36).substr(2, 9).toUpperCase();
+        tokenSlot.innerText = `TOKEN_#${randomId}_GLITCH`;
+
+        buyBtn.innerText = "TOKEN SECURED";
+        buyBtn.style.borderColor = "#00FF41";
+        buyBtn.style.color = "#00FF41";
+      }, 1500);
+    });
+  </script>
+</body>
