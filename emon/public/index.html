@@ -42,11 +42,30 @@
       const output = document.getElementById("terminal-output");
       const tokenSlot = document.getElementById("token-slot");
 
-      // 1. Fetch Price on Load
+      // SIMULATION MODE: Use LocalStorage instead of Server
+      // This allows it to work on GitHub Pages without a backend
+
+      function getSimulatedPrice() {
+        let current = localStorage.getItem("wundrian_price");
+        if (!current) {
+          current = 42; // Start at $42
+          localStorage.setItem("wundrian_price", current);
+        }
+        return parseInt(current);
+      }
+
+      function incrementSimulatedPrice() {
+        let current = getSimulatedPrice();
+        current++;
+        localStorage.setItem("wundrian_price", current);
+        return current;
+      }
+
+      // 1. Load Price
       async function updatePrice() {
-        const res = await fetch("/api/price");
-        const data = await res.json();
-        priceDisplay.innerText = `$${data.price}.00`;
+        // Simulate API delay
+        const price = getSimulatedPrice();
+        priceDisplay.innerText = `$${price}.00`;
       }
 
       updatePrice();
@@ -56,23 +75,25 @@
         buyBtn.innerText = "PROCESSING...";
         buyBtn.disabled = true;
 
-        // Simulate Network Delay for drama
-        setTimeout(async () => {
-          const res = await fetch("/api/buy", { method: "POST" });
-          const data = await res.json();
+        // Simulate Network Delay (The "Hacking" feel)
+        setTimeout(() => {
+          const nextPrice = incrementSimulatedPrice();
 
-          if (data.success) {
-            // Show the "E-mon"
-            output.classList.remove("hidden");
-            tokenSlot.innerText = data.token;
+          // Show the "E-mon"
+          output.classList.remove("hidden");
+          // Generate a random "glitch" string for the token
+          const randomId = Math.random()
+            .toString(36)
+            .substr(2, 9)
+            .toUpperCase();
+          tokenSlot.innerText = `TOKEN_#${randomId}_GLITCH`;
 
-            // Update price for the next person
-            updatePrice();
+          // Update price for the next "visit"
+          priceDisplay.innerText = `$${nextPrice}.00`;
 
-            buyBtn.innerText = "TOKEN SECURED";
-            buyBtn.style.borderColor = "#00FF41"; // Green
-            buyBtn.style.color = "#00FF41";
-          }
+          buyBtn.innerText = "TOKEN SECURED";
+          buyBtn.style.borderColor = "#00FF41"; // Green
+          buyBtn.style.color = "#00FF41";
         }, 1500);
       });
     </script>
