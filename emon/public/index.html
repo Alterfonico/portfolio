@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AInwonderland</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="glitch-wrapper">
+        <h1 class="brand" data-text="AInwonderland">AInwonderland_</h1>
+      </header>
+
+      <main>
+        <div class="manifesto-mini">
+          <p>WE REJECT THE GRAY.</p>
+          <p>BECOME A <span class="highlight">WUNDRIAN</span>.</p>
+        </div>
+
+        <div class="ticker-box">
+          <div class="label">CURRENT E-MON VALUE</div>
+          <div class="price" id="price-display">$...</div>
+          <div class="sub-label">
+            LAST MINT: <span class="blink">JUST NOW</span>
+          </div>
+        </div>
+
+        <button id="buy-btn" class="ghost-btn">[ SECURE TOKEN ]</button>
+
+        <div id="terminal-output" class="hidden">
+          <p>> ACCESS GRANTED.</p>
+          <p>> E-MON: <span class="token" id="token-slot"></span></p>
+          <p>> <a href="#" class="discord-link">ENTER THE VOID (DISCORD)</a></p>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const priceDisplay = document.getElementById("price-display");
+      const buyBtn = document.getElementById("buy-btn");
+      const output = document.getElementById("terminal-output");
+      const tokenSlot = document.getElementById("token-slot");
+
+      // 1. Fetch Price on Load
+      async function updatePrice() {
+        const res = await fetch("/api/price");
+        const data = await res.json();
+        priceDisplay.innerText = `$${data.price}.00`;
+      }
+
+      updatePrice();
+
+      // 2. Buy Logic
+      buyBtn.addEventListener("click", async () => {
+        buyBtn.innerText = "PROCESSING...";
+        buyBtn.disabled = true;
+
+        // Simulate Network Delay for drama
+        setTimeout(async () => {
+          const res = await fetch("/api/buy", { method: "POST" });
+          const data = await res.json();
+
+          if (data.success) {
+            // Show the "E-mon"
+            output.classList.remove("hidden");
+            tokenSlot.innerText = data.token;
+
+            // Update price for the next person
+            updatePrice();
+
+            buyBtn.innerText = "TOKEN SECURED";
+            buyBtn.style.borderColor = "#00FF41"; // Green
+            buyBtn.style.color = "#00FF41";
+          }
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #050505; /* Not quite black */
+  color: #e0e0e0;
+  font-family: "Courier New", Courier, monospace;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.container {
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+/* BRANDING */
+.brand {
+  font-size: 1.5rem;
+  letter-spacing: -1px;
+  margin-bottom: 2rem;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* THE MANIFESTO TEXT */
+.manifesto-mini {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 3rem;
+  line-height: 1.4;
+}
+
+.highlight {
+  color: #a020f0; /* Purple */
+  font-weight: bold;
+}
+
+/* THE PRICE TICKER */
+.ticker-box {
+  margin-bottom: 3rem;
+}
+
+.label {
+  font-size: 0.7rem;
+  color: #444;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-size: 4rem;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-weight: bold;
+}
+
+.sub-label {
+  font-size: 0.7rem;
+  color: #444;
+  margin-top: 0.5rem;
+}
+
+.blink {
+  color: #00ff41; /* Terminal Green */
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* THE BUTTON */
+.ghost-btn {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 1rem 2rem;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.ghost-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.ghost-btn:disabled {
+  border-color: #333;
+  color: #333;
+  background: transparent;
+  cursor: not-allowed;
+}
+
+/* TERMINAL OUTPUT (Hidden) */
+.hidden {
+  display: none;
+}
+
+#terminal-output {
+  margin-top: 2rem;
+  text-align: left;
+  border-top: 1px dashed #333;
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  color: #00ff41;
+}
+
+.token {
+  color: #fff;
+  background: #222;
+  padding: 2px 5px;
+}
+
+.discord-link {
+  color: #a020f0;
+  text-decoration: none;
+  border-bottom: 1px solid #a020f0;
+}
