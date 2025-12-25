@@ -48,7 +48,7 @@
       function getSimulatedPrice() {
         let current = localStorage.getItem("wundrian_price");
         if (!current) {
-          current = 42; // Start at $42
+          current = 1; // Start at $42
           localStorage.setItem("wundrian_price", current);
         }
         return parseInt(current);
