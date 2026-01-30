@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chronos Seed - Fractal Time</title>
+    <!-- Tailwind for rapid layout, custom CSS for specific aesthetics -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="min-h-screen flex items-center justify-center p-4">
+    <div
+      class="w-full max-w-2xl bg-slate-900/50 p-8 rounded-3xl border border-slate-800 backdrop-blur-sm"
+    >
+      <!-- Header -->
+      <div class="mb-12 text-center">
+        <h1 class="text-3xl font-bold tracking-tight text-white mb-2">
+          Chronos Seed
+        </h1>
+        <p class="text-slate-400 text-sm">
+          A fractal foundation for global time coordination.
+        </p>
+      </div>
+
+      <!-- Time Stack (The Fractal Container) -->
+      <div id="time-stack" class="space-y-4 mb-12">
+        <!-- Zone cards will be injected here by script.js -->
+      </div>
+
+      <!-- Master Controller (The Engine) -->
+      <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700">
+        <div class="flex justify-between items-end mb-4">
+          <label
+            class="text-xs font-bold uppercase tracking-widest text-slate-500"
+            >Universal Scrubber</label
+          >
+          <button
+            id="reset-btn"
+            class="text-xs text-blue-400 hover:text-blue-300 transition"
+          >
+            Reset to Now
+          </button>
+        </div>
+        <input
+          type="range"
+          id="master-scrub"
+          min="0"
+          max="1439"
+          value="0"
+          class="time-slider w-full appearance-none bg-transparent mb-4"
+        />
+        <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+          <span>00:00</span>
+          <span>06:00</span>
+          <span>12:00</span>
+          <span>18:00</span>
+          <span>24:00</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
