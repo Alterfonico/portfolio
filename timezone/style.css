@@ -1,0 +1,56 @@
+:root {
+  --bg: #0f172a;
+  --card-bg: #1e293b;
+  --accent: #3b82f6;
+  --day: #fbbf24;
+  --night: #818cf8;
+}
+
+body {
+  background-color: var(--bg);
+  color: white;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Custom Time Slider Track */
+.time-slider::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    to right,
+    var(--night) 0%,
+    var(--night) 25%,
+    var(--day) 40%,
+    var(--day) 60%,
+    var(--night) 75%,
+    var(--night) 100%
+  );
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Custom Slider Thumb */
+.time-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 24px;
+  width: 24px;
+  background: white;
+  border: 4px solid var(--accent);
+  border-radius: 50%;
+  margin-top: -8px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+/* Firefox Support */
+.time-slider::-moz-range-thumb {
+  height: 24px;
+  width: 24px;
+  background: white;
+  border: 4px solid var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+.mono {
+  font-family: "JetBrains Mono", monospace;
+}
