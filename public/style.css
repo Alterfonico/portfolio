@@ -1,0 +1,88 @@
+/* --- Sovereign Foundation --- */
+:root {
+  --bg: #0a0a0a;
+  --text: #e0e0e0;
+  --accent: #00ff9d; /* Mentat Green */
+  --dim: #666;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: "Courier New", Courier, monospace; /* The Engineer's Font */
+  line-height: 1.6;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+/* --- The Master Grid --- */
+main {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Aligns content to the left of the center column */
+}
+
+/* --- Section Spacing --- */
+section {
+  width: 100%; /* Ensures borders stretch full width of the 800px column */
+  margin-bottom: 4rem;
+}
+
+/* --- Structural Sections --- */
+section {
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #222;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* --- The Voltage Widget Alignment --- */
+.status-container {
+  align-self: center; /* Specifically centers the widget while text stays left-aligned */
+  border: 1px solid var(--accent);
+  padding: 1.5rem;
+  margin-bottom: 4rem;
+  text-align: center;
+  background: rgba(0, 255, 157, 0.05); /* Subtle glow background */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.voltage-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: #1a1a1a;
+  margin-top: 5px;
+}
+
+.voltage-bar-fill {
+  height: 100%;
+  width: 0%; /* Updated by JS */
+  background: #00ff9d;
+  box-shadow: 0 0 10px #00ff9d;
+  transition: width 0.5s ease-in-out;
+}
+
+.label {
+  color: var(--dim);
+  font-size: 0.8rem;
+}
+
+/* --- Utility --- */
+.mono {
+  font-family: "Courier New", monospace;
+}
+.dim {
+  color: var(--dim);
+}
+
+/*Section*/

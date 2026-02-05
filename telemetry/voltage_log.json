@@ -1,7 +1,7 @@
 [
     {
         "timestamp": "2026-02-04T22:30:00Z",
-        "voltage": 8.5,
+        "voltage": 9.5,
         "mode": "Ghost-Architect",
         "grip_count": 3,
         "tags": "#refactor",

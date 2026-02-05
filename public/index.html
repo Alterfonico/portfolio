@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Portfolio for Alberto Campos</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <main>
@@ -25,5 +26,16 @@
       <a href="emon/public/index.html">emon</a>
       <a href="timezone/index.html">time-zone</a>
     </section>
+    <section>
+      <div id="system-status" class="status-container">
+        <span class="label">SYSTEM VOLTAGE:</span>
+        <span id="voltage-value">--</span>
+        <div class="voltage-bar-bg">
+          <div id="voltage-fill" class="voltage-bar-fill"></div>
+        </div>
+        <span id="system-mode">GHOST_MODE</span>
+      </div>
+    </section>
   </body>
+  <script src="bridge.js"></script>
 </html>
