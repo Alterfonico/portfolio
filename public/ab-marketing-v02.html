@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Growth Engine — Fractal Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: "Courier New", monospace;
+        background: #050505;
+        color: #00ff41;
+      }
+
+      svg {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .node circle {
+        fill: #000;
+        stroke: #00ff41;
+        stroke-width: 2px;
+        cursor: pointer;
+      }
+
+      .node text {
+        fill: #00ff41;
+        font-size: 13px;
+        pointer-events: none;
+      }
+
+      .link {
+        fill: none;
+        stroke: #003b11;
+        stroke-width: 2px;
+      }
+
+      .tooltip {
+        position: absolute;
+        background: #000;
+        color: #00ff41;
+        padding: 8px;
+        border: 1px solid #00ff41;
+        font-size: 12px;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="tooltip" class="tooltip" style="opacity: 0"></div>
+    <svg></svg>
+
+    <script>
+      // ================= DATA (FRACTAL STRUCTURE) =================
+
+      const data = {
+        name: "Growth Engine",
+        desc: "Closed-loop system: Attention → Trust → Conversion → Expansion",
+        children: [
+          {
+            name: "ACT 1: ATTRACT",
+            desc: "Generate attention and inbound leads continuously",
+            children: [
+              {
+                name: "Content Engine",
+                desc: "Multi-language, localized, high-frequency content",
+                children: [
+                  { name: "Trend-based content" },
+                  { name: "Localized messaging" },
+                  { name: "Strong CTA" },
+                  { name: "Feedback loop (kill/scale)" },
+                ],
+              },
+              {
+                name: "Lead Capture",
+                desc: "Convert attention into identifiable leads",
+                children: [
+                  { name: "DM / WhatsApp entry" },
+                  { name: "Landing pages" },
+                  { name: "Basic qualification" },
+                ],
+              },
+            ],
+          },
+
+          {
+            name: "ACT 2: CONVERT",
+            desc: "Turn leads into paying students",
+            children: [
+              {
+                name: "Golden Minute",
+                desc: "Respond <60s with relevance + trust",
+                children: [
+                  { name: "Instant reply" },
+                  { name: "Native language" },
+                  { name: "Context-aware answers" },
+                ],
+              },
+              {
+                name: "Qualification",
+                desc: "Segment by intent and readiness",
+                children: [
+                  { name: "High Intent" },
+                  { name: "Medium Intent" },
+                  { name: "Low Signal" },
+                  { name: "Future Intent" },
+                ],
+              },
+              {
+                name: "Conversion Paths",
+                desc: "Multiple ways to close",
+                children: [
+                  { name: "Call booking" },
+                  { name: "Direct payment link" },
+                  { name: "Async video close" },
+                ],
+              },
+              {
+                name: "Failure Recovery",
+                desc: "Plug leaks in conversion",
+                children: [
+                  { name: "No reply → follow-up sequence" },
+                  { name: "No-show → reschedule loop" },
+                  { name: "Ghosting → urgency + proof" },
+                ],
+              },
+            ],
+          },
+
+          {
+            name: "ACT 3: RETAIN & EXPAND",
+            desc: "Maximize lifetime value and referrals",
+            children: [
+              {
+                name: "Onboarding",
+                desc: "Reduce anxiety, increase confidence",
+                children: [
+                  { name: "30-day pre-arrival" },
+                  { name: "Expectation framing" },
+                  { name: "First win in 48h" },
+                ],
+              },
+              {
+                name: "Arrival Support",
+                desc: "Ensure smooth landing",
+                children: [
+                  { name: "SIM / PPSN guidance" },
+                  { name: "Navigation help" },
+                ],
+              },
+              {
+                name: "Expansion Loop",
+                desc: "Turn users into growth",
+                children: [
+                  { name: "Referral ask (peak moment)" },
+                  { name: "Testimonial capture" },
+                  { name: "Renewals" },
+                ],
+              },
+              {
+                name: "Reactivation",
+                desc: "Recycle cold leads",
+                children: [
+                  { name: "Trigger-based outreach" },
+                  { name: "Deadline reminders" },
+                  { name: "New offers" },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      // ================= D3 TREE =================
+
+      const svg = d3.select("svg");
+      const g = svg.append("g").attr("transform", "translate(120,40)");
+
+      const tree = d3
+        .tree()
+        .size([window.innerHeight - 100, window.innerWidth - 300]);
+
+      let root = d3.hierarchy(data);
+      root.x0 = window.innerHeight / 2;
+      root.y0 = 0;
+
+      // collapse all initially
+      root.children.forEach(collapse);
+
+      function collapse(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(collapse);
+          d.children = null;
+        }
+      }
+
+      const tooltip = d3.select("#tooltip");
+
+      function update(source) {
+        const treeData = tree(root);
+        const nodes = treeData.descendants();
+        const links = treeData.links();
+
+        nodes.forEach((d) => (d.y = d.depth * 200));
+
+        const node = g
+          .selectAll("g.node")
+          .data(nodes, (d) => d.id || (d.id = Math.random()));
+
+        const nodeEnter = node
+          .enter()
+          .append("g")
+          .attr("class", "node")
+          .attr("transform", `translate(${source.y0},${source.x0})`)
+          .on("click", (event, d) => {
+            d.children = d.children ? null : d._children;
+            update(d);
+          })
+          .on("mousemove", (event, d) => {
+            if (d.data.desc) {
+              tooltip
+                .style("opacity", 1)
+                .html(d.data.desc)
+                .style("left", event.pageX + 10 + "px")
+                .style("top", event.pageY + 10 + "px");
+            }
+          })
+          .on("mouseout", () => tooltip.style("opacity", 0));
+
+        nodeEnter.append("circle").attr("r", 7);
+
+        nodeEnter
+          .append("text")
+          .attr("dy", 4)
+          .attr("x", 12)
+          .text((d) => d.data.name);
+
+        const nodeUpdate = nodeEnter.merge(node);
+
+        nodeUpdate
+          .transition()
+          .duration(350)
+          .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+        node
+          .exit()
+          .transition()
+          .duration(350)
+          .attr("transform", `translate(${source.y},${source.x})`)
+          .remove();
+
+        const link = g.selectAll("path.link").data(links, (d) => d.target.id);
+
+        const linkEnter = link
+          .enter()
+          .insert("path", "g")
+          .attr("class", "link")
+          .attr("d", () => {
+            const o = { x: source.x0, y: source.y0 };
+            return diagonal(o, o);
+          });
+
+        linkEnter
+          .merge(link)
+          .transition()
+          .duration(350)
+          .attr("d", (d) => diagonal(d.source, d.target));
+
+        link
+          .exit()
+          .transition()
+          .duration(350)
+          .attr("d", () => {
+            const o = { x: source.x, y: source.y };
+            return diagonal(o, o);
+          })
+          .remove();
+
+        nodes.forEach((d) => {
+          d.x0 = d.x;
+          d.y0 = d.y;
+        });
+      }
+
+      function diagonal(s, d) {
+        return `M ${s.y} ${s.x}
+          C ${(s.y + d.y) / 2} ${s.x},
+            ${(s.y + d.y) / 2} ${d.x},
+            ${d.y} ${d.x}`;
+      }
+
+      update(root);
+    </script>
+  </body>
+</html>
